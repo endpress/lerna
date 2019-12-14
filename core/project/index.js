@@ -17,7 +17,7 @@ const deprecateConfig = require("./lib/deprecate-config");
 const makeFileFinder = require("./lib/make-file-finder");
 
 class Project {
-  constructor(cwd) {
+  constructor(cwd, packageScope) {
     const explorer = cosmiconfig("lerna", {
       searchPlaces: ["lerna.json", "package.json"],
       transform(obj) {
@@ -54,7 +54,7 @@ class Project {
       // re-throw other errors, could be ours or third-party
       throw err;
     }
-
+    this.packageScope = packageScope;
     this.config = loaded.config;
     this.rootConfigLocation = loaded.filepath;
     this.rootPath = path.dirname(loaded.filepath);
@@ -82,6 +82,18 @@ class Project {
             See: https://github.com/lerna/lerna/blob/master/commands/bootstrap/README.md#--use-workspaces
           `
         );
+      }
+
+      if (this.packageScope) {
+        let packages = workspaces.packages;
+        let scopedPackages = workspaces.scopedPackages[this.packageScope]
+        if (!scopedPackages) {
+          throw new ValidationError(
+            "SCOPEDPACKAGE",
+            "scopedPackages not found"
+          );
+        }
+        return packages.concat(scopedPackages)
       }
 
       return workspaces.packages || workspaces;

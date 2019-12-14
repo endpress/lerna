@@ -43,7 +43,7 @@ class Command {
       let chain = Promise.resolve();
 
       chain = chain.then(() => {
-        this.project = new Project(argv.cwd);
+        this.project = new Project(argv.cwd, argv['package-scope']);
       });
       chain = chain.then(() => this.configureEnvironment());
       chain = chain.then(() => this.configureOptions());

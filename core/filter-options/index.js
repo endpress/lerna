@@ -15,6 +15,11 @@ function filterOptions(yargs) {
       type: "string",
       requiresArg: true,
     },
+    'package-scope': {
+      describe: "Add scoped packages into packages",
+      type: "string",
+      requiresArg: true,
+    },
     ignore: {
       describe: "Exclude packages with names matching the given glob.",
       type: "string",
